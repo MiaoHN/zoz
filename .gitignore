@@ -1,0 +1,13 @@
+build/
+bin/
+lib/
+.vscode/
+.idea/
+.vs/
+out/
+cmake-build-*/
+.cache/
+.ccls-cache/
+
+.ccls
+compile_commands.json
