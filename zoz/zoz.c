@@ -29,7 +29,7 @@ static void show_prompt(Repler* repler) {
     printf(":(");
   }
 
-  printf(" > ");
+  printf(" >> ");
 }
 
 /**
@@ -61,6 +61,12 @@ static void run_command(Repler* repler) {
   if (!strcmp(repler->input, "exit") || !strcmp(repler->input, "exit()")) {
     printf("Bye\n");
     repler->status = REPL_STATUS_EXIT;
+    return;
+  }
+  if (!strcmp(repler->input, "version") ||
+      !strcmp(repler->input, "version()")) {
+    printf("zoz version 0.0.1\n");
+    repler->status = REPL_STATUS_RUNNING;
     return;
   }
   if (!strcmp(repler->input, "help") || !strcmp(repler->input, "help()")) {

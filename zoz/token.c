@@ -171,6 +171,85 @@ static Token create_token_number(Scanner* scanner) {
   return create_token(scanner, TOKEN_NUMBER);
 }
 
+static TokenType pattern_match(Scanner* scanner, const char* pattern, int len,
+                               TokenType type) {
+  if (scanner->current - scanner->start == len) {
+    if (!memcmp(scanner->start, pattern, len)) {
+      return type;
+    }
+  }
+  return TOKEN_IDENTIFIER;
+}
+
+/**
+ * @brief get keyword type of scanner
+ * @details if string in scanner is not a key word, return TOKEN_IDENTIFIER
+ * @todo add all keywords
+ *
+ * @param scanner
+ * @return TokenType
+ */
+static TokenType check_keyword(Scanner* scanner) {
+  switch (scanner->start[0]) {
+    case 'i': {
+      switch (scanner->start[1]) {
+        case 'f':
+          return pattern_match(scanner, "if", 2, TOKEN_IF);
+        case 'm':
+          return pattern_match(scanner, "import", 6, TOKEN_IMPORT);
+      }
+      break;
+    }
+    case 'c':
+      return pattern_match(scanner, "class", 5, TOKEN_CLASS);
+    case 'w':
+      return pattern_match(scanner, "while", 5, TOKEN_WHILE);
+    case 'e':
+      return pattern_match(scanner, "else", 4, TOKEN_ELSE);
+    case 'a':
+      return pattern_match(scanner, "and", 3, TOKEN_AND);
+    case 'o':
+      return pattern_match(scanner, "or", 2, TOKEN_OR);
+    case 'f': {
+      switch (scanner->start[1]) {
+        case 'o':
+          return pattern_match(scanner, "for", 3, TOKEN_FOR);
+        case 'a':
+          return pattern_match(scanner, "false", 5, TOKEN_FALSE);
+        case 'u':
+          return pattern_match(scanner, "func", 4, TOKEN_FUNC);
+      }
+      break;
+    }
+    case 't':
+      return pattern_match(scanner, "true", 4, TOKEN_TRUE);
+    case 'r':
+      return pattern_match(scanner, "return", 6, TOKEN_RETURN);
+    case 'p':
+      return pattern_match(scanner, "print", 5, TOKEN_PRINT);
+    default:
+      break;
+  }
+  return TOKEN_IDENTIFIER;
+}
+
+static bool is_alpha(char c) { return isalpha(c) || c == '_'; }
+
+/**
+ * @brief create identifier or keywords
+ * @details first check if the word is a keyword, if so, create corresponding
+ * token, if not, create identifier token
+ *
+ * @param scanner
+ * @return Token
+ */
+static Token create_token_identifier(Scanner* scanner) {
+  while (isdigit(peek(scanner)) || is_alpha(peek(scanner))) {
+    advance(scanner);
+  }
+  return create_token(scanner, check_keyword(scanner));
+}
+
 /**
  * @brief skip whitespace, tab .etc
  * @todo skip comment
@@ -214,12 +293,22 @@ static Token scan_token(Scanner* scanner) {
   if (is_at_end(scanner)) {
     return create_token(scanner, TOKEN_EOF);
   }
+  if (isdigit(peek(scanner))) {
+    return create_token_number(scanner);
+  }
+  if (is_alpha(peek(scanner))) {
+    return create_token_identifier(scanner);
+  }
 
   switch (advance(scanner)) {
     case '(':
       return create_token(scanner, TOKEN_LEFT_PAREN);
     case ')':
       return create_token(scanner, TOKEN_RIGHT_PAREN);
+    case '[':
+      return create_token(scanner, TOKEN_LEFT_BRACKET);
+    case ']':
+      return create_token(scanner, TOKEN_RIGHT_BRACKET);
     case '{':
       return create_token(scanner, TOKEN_LEFT_BRACE);
     case '}':
@@ -230,11 +319,44 @@ static Token scan_token(Scanner* scanner) {
       } else {
         return create_token(scanner, TOKEN_DOT);
       }
+      break;
     }
     case ';':
       return create_token(scanner, TOKEN_SEMICOLON);
     case ',':
       return create_token(scanner, TOKEN_COMMA);
+    case '|': {
+      if (match(scanner, '|')) {
+        return create_token(scanner, TOKEN_PARALLEL);
+      } else {
+        return create_token(scanner, TOKEN_VERTICAL_BAR);
+      }
+      break;
+    }
+    case '$':
+      return create_token(scanner, TOKEN_DOLLAR);
+    case '@':
+      return create_token(scanner, TOKEN_AT);
+    case '%':
+      return create_token(scanner, TOKEN_PERCENT);
+    case '#':
+      return create_token(scanner, TOKEN_POUND);
+    case '~':
+      return create_token(scanner, TOKEN_TLIDE);
+    case ':':
+      return create_token(scanner, TOKEN_COLON);
+    case '^':
+      return create_token(scanner, TOKEN_HAT);
+    case '?':
+      return create_token(scanner, TOKEN_QUEST);
+    case '&': {
+      if (match(scanner, '&')) {
+        return create_token(scanner, TOKEN_AMPERSAND_AND);
+      } else {
+        return create_token(scanner, TOKEN_AMPERSAND);
+      }
+      break;
+    }
     case '-': {
       if (isdigit(peek(scanner))) {
         return create_token_number(scanner);
@@ -243,6 +365,7 @@ static Token scan_token(Scanner* scanner) {
       } else {
         return create_token(scanner, TOKEN_MINUS);
       }
+      break;
     }
     case '+': {
       if (isdigit(peek(scanner))) {
@@ -252,6 +375,7 @@ static Token scan_token(Scanner* scanner) {
       } else {
         return create_token(scanner, TOKEN_PLUS);
       }
+      break;
     }
     case '/':
       return create_token(scanner, TOKEN_SLASH);
@@ -263,6 +387,7 @@ static Token scan_token(Scanner* scanner) {
       } else {
         return create_token(scanner, TOKEN_BANG);
       }
+      break;
     }
     case '=': {
       if (match(scanner, '=')) {
@@ -270,6 +395,7 @@ static Token scan_token(Scanner* scanner) {
       } else {
         return create_token(scanner, TOKEN_EQUAL);
       }
+      break;
     }
     case '<': {
       if (match(scanner, '=')) {
@@ -277,6 +403,7 @@ static Token scan_token(Scanner* scanner) {
       } else {
         return create_token(scanner, TOKEN_LESS);
       }
+      break;
     }
     case '>': {
       if (match(scanner, '=')) {
@@ -284,20 +411,10 @@ static Token scan_token(Scanner* scanner) {
       } else {
         return create_token(scanner, TOKEN_GREATER);
       }
+      break;
     }
     case '"':
       return create_token_string(scanner);
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-      return create_token_number(scanner);
     default:
       return error_token(scanner, "Unexpected charactor");
   }
