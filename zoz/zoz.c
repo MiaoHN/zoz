@@ -22,6 +22,12 @@ typedef struct Repler {
 #define REPL_STATUS_ERROR   1
 #define REPL_STATUS_EXIT    2
 
+static void init_repler(Repler* repler) {
+  repler->input  = "";
+  repler->status = REPL_STATUS_RUNNING;
+  init_vm(&repler->vm);
+}
+
 static void show_prompt(Repler* repler) {
   if (repler->status == REPL_STATUS_RUNNING) {
     printf(":)");
@@ -89,6 +95,7 @@ static void run_command(Repler* repler) {
 
 void repl() {
   Repler repler;
+  init_repler(&repler);
 
   while (repler.status != REPL_STATUS_EXIT) {
     show_prompt(&repler);

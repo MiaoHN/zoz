@@ -4,9 +4,9 @@
 #include <string.h>
 
 static void dump(const char* type, Token* token) {
-  char buf[token->length + 1];
+  char* buf;
+  strncpy(buf, token->start, token->length + 1);
   buf[token->length] = '\0';
-  memcpy(buf, token->start, token->length);
   printf("%s:%d:%d\t%s\n", type, token->line, token->column, buf);
 }
 
