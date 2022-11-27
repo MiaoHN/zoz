@@ -129,8 +129,12 @@ static Token create_token_string(Scanner* scanner) {
     return error_token(scanner, "Unterminated string");
   }
 
+  // skip first "
+  scanner->start++;
+  Token token = create_token(scanner, TOKEN_STRING);
+  // skip last "
   advance(scanner);
-  return create_token(scanner, TOKEN_STRING);
+  return token;
 }
 
 static bool is_exp_start(Scanner* scanner) {
