@@ -98,7 +98,7 @@ typedef struct TestManager {
 
 extern TestManager tests;
 
-void runTest(int argc, char** argv) {
+static int runTest(int argc, char** argv) {
   enum colors { RESET, GREEN, RED, YELLOW, BLUE };
   const char* colors[] = {"\033[0m", "\033[32m", "\033[31m", "\033[33m",
                           "\033[34m"};
@@ -130,6 +130,9 @@ void runTest(int argc, char** argv) {
   printf("[  PASSED  ] %d/%d\n", passCases, tests.count);
   printf("[   TIME   ] %.3fms\n", timeUsed);
   printf("[PERCENTAGE] %.2f%%\n", (float)passCases / tests.count * 100.0f);
+
+  // if all tests pass, then return 0, otherwise return 1
+  return passCases != tests.count;
 }
 
 TestManager tests = {0, 0};
@@ -137,10 +140,7 @@ TestManager tests = {0, 0};
 #ifndef TEST_FORCE_MAIN
 #define TEST_FORCE_MAIN
 
-int main(int argc, char** argv) {
-  runTest(argc, argv);
-  return 0;
-}
+int main(int argc, char** argv) { return runTest(argc, argv); }
 
 #endif  // TEST_FORCE_MAIN
 

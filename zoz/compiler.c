@@ -12,8 +12,12 @@ CompileResult compile(const char* source) {
   TokenList tokens = tokenizer(source);
 
   Token* last_token = &tokens.buffer[tokens.len - 1];
-  if (last_token->type != TOKEN_ERROR) dump_tokens(&tokens);
+  if (last_token->type != TOKEN_ERROR) {
+    dump_tokens(&tokens);
+    result.status = COMPILE_STATUS_SUCCESS;
+  } else {
+    result.status = COMPILE_STATUS_ERROR;
+  }
 
-  result.status = COMPILE_STATUS_ERROR;
   return result;
 }

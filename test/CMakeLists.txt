@@ -1,9 +1,10 @@
-if (WIN32)
-  message("Testing temporary not support Windows platform")
+if(WIN32)
+  message(STATUS "Testing temporary not support Windows platform")
   return()
 endif()
 
-enable_testing()
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin/test)
+
 include_directories(../zoz)
 
 add_executable(test_token test_token.c)
