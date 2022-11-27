@@ -86,3 +86,28 @@ TEST(String, EscapeSequence) {
     EXPECT_STREQ(strings[i], str);
   }
 }
+
+TEST(Character, Single) {
+  TokenType tokens[] = {TOKEN_DOT, TOKEN_BANG, TOKEN_COMMA, TOKEN_SEMICOLON,
+                        TOKEN_EQUAL};
+  char      source[] = ".!,;=";
+
+  TokenList list = tokenizer(source);
+  EXPECT_TRUE(list.len == sizeof(tokens) / sizeof(TokenType));
+
+  for (int i = 0; i < list.len; ++i) {
+    EXPECT_TRUE(list.buffer[i].type == tokens[i]);
+  }
+}
+
+TEST(Character, Multi) {
+  TokenType tokens[] = {TOKEN_EQUAL_EQUAL, TOKEN_BANG_EQUAL};
+  char      source[] = "==!=";
+
+  TokenList list = tokenizer(source);
+  EXPECT_TRUE(list.len == sizeof(tokens) / sizeof(TokenType));
+
+  for (int i = 0; i < list.len; ++i) {
+    EXPECT_TRUE(list.buffer[i].type == tokens[i]);
+  }
+}
