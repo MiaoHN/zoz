@@ -14,7 +14,7 @@ CompileResult compile(const char* source) {
   Token* last_token = &tokens.buffer[tokens.len - 1];
   if (last_token->type != TOKEN_ERROR) {
     dump_tokens(&tokens);
-    result.status = COMPILE_STATUS_SUCCESS;
+    result.status = create_ast(result.ast, &tokens);
   } else {
     result.status = COMPILE_STATUS_ERROR;
   }

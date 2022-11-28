@@ -1,15 +1,18 @@
 #ifndef __ZOZ_COMPILER_H__
 #define __ZOZ_COMPILER_H__
 
-#define COMPILE_STATUS_SUCCESS 0
-#define COMPILE_STATUS_ERROR   1
+#include "ast.h"
+
+#define COMPILE_STATUS_SUCCESS 1
+#define COMPILE_STATUS_ERROR   0
 
 /**
  * @brief Compiler is a state machine
  *
  */
 typedef struct CompileResult {
-  int status;
+  Ast* ast;
+  int  status;
 } CompileResult;
 
 /**
