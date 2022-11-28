@@ -1,12 +1,12 @@
 # ZOZ
 
-A toy script language inspired by [CraftingInterpreters](https://craftinginterpreters.com)
+一个玩具脚本语言，受到 [CraftingInterpreters](https://craftinginterpreters.com) 的启发
 
-## Examples
+## 示例
 
-### Repl
+### 交互模式
 
-Just type like follow:
+只需执行 `zoz` 即可:
 
 ```bash
 $ zoz
@@ -14,19 +14,19 @@ $ zoz
 zoz version 0.0.1
 ```
 
-Then you can play with zoz in repl-mode
+接下来你就可以在交互模式中和 `zoz` 玩一玩
 
-:star: **Notice**
+:star: **注意**
 
-- `:) >` means everything is ok
-- `:( >` means everything is ok
+- `:) >` 表示上条命令成功执行
+- `:( >` 表示上条命令执行失败
 
-### File
+### 执行文件
 
 > **Note**
-> examples below may not be implemented.
+> 下面的例子可能还没有实现
 
-Below is a simple hello-world program
+一个简单的 hello world 示例程序如下所示：
 
 ```z
 // hello.z
@@ -39,7 +39,7 @@ func main() {
 }
 ```
 
-you can run it with:
+你可以通过如下命令运行它:
 
 ```z
 $ zoz hello.z
@@ -48,24 +48,24 @@ Your input is 'Hello World!'
 $
 ```
 
-## Build
+## 构建
 
-This project don't use any third-party library, and build tool is cmake. So you just need to setup basic cmake environment and build with cmake simply:
+本项目未使用第三方库并且通过 cmake 进行构建，所以只需如下命令即可构建项目：
 
 ```bash
 cmake . -B build && cmake --build build
 ```
 
-And if you want to run tests, you can use `ctest`:
+如果想运行测试，你可以使用 `ctest`:
 
 ```bash
 cd build/test && ctest
 ```
 
-## Documentation
+## 文档
 
-Please see [here](./docs/README.md)
+见 [这里](./docs/README.md)
 
-## License
+## 协议
 
 [MIT](./LICENSE)
